@@ -1,0 +1,342 @@
+Imports CommonCode
+Imports System.Data
+
+Partial Class MembershipForm
+    Inherits System.Web.UI.Page
+
+    Dim KPIN As String = ""
+    Dim CommonObj As New CommonCode
+    Dim TransactionError As String = MSG_Incomplete_Transaction
+
+
+    Protected Sub ButtonSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ButtonSubmit.Click
+        Try
+            LabelPersonalDetails.Text = ""
+            LabelFamilyDetails.Text = ""
+            LabelContactDetails.Text = ""
+            LabelLoginDetails.Text = ""
+            LabelErrorMessage.Text = ""
+
+            If ValidationMemberInfo() Then
+                Exit Sub
+            End If
+
+            If GenerateKPIN() <> 0 Then
+                Response.Redirect("ConfirmInformation.aspx?ConfirmKPIN=" & KPIN, False)
+                'CommonObj.ShowMessageBox("Your Information is updated successfully.")
+                'Response.Redirect("GlobalDirectory.aspx", False)
+            Else
+                LabelErrorMessage.Text = CommonObj.ShowMessageBox(TransactionError)
+            End If
+
+        Catch ex As Exception
+            CommonObj.ShowMessageBox(ex.Message, "Critical")
+        End Try
+    End Sub
+
+    Private Function ValidationMemberInfo() As Boolean
+        Try
+            If ValidateName(TextBoxFirstName.Text, "First Name", True) OrElse ValidateName(TextBoxMiddleName.Text, "Middle Name", True) OrElse _
+            ValidateName(TextBoxLastName.Text, "Last Name", True) Then
+                Return True
+            End If
+
+            If (TextBoxFirstName.Text & " " & TextBoxMiddleName.Text & " " & TextBoxLastName.Text).Length > 30 Then
+                LabelPersonalDetails.Text = "Name can not have length greater than 30."
+                Return True
+            End If
+
+            If WebUserControlDOB.ValidateDate() Then
+                LabelPersonalDetails.Text = "Incorrect Date. Please specify correct Date of Birth"
+                Return True
+            End If
+
+            If ValidateCountry(TextBoxNationality.Text, "Nationality", True) Then
+                Return True
+            End If
+
+            'If ValidateName(TextBoxFatherName.Text, "Father Name") OrElse ValidateName(TextBoxMotherName.Text, "Mother Name") OrElse _
+            'ValidateName(TextBoxSpouseName.Text, "Spouse Name") Then
+            '    Return True
+            'End If
+
+            Dim errorMessage As String = ""
+            errorMessage = WebUserControlFathersName.ValidateName("Fathers Name", True)
+            If errorMessage <> "" Then
+                LabelFamilyDetails.Text = errorMessage
+                Return True
+            End If
+            errorMessage = WebUserControlFathersName.ValidateName("Mothers Name", True)
+            If errorMessage <> "" Then
+                LabelFamilyDetails.Text = errorMessage
+                Return True
+            End If
+            errorMessage = WebUserControlFathersName.ValidateName("Spouse Name", True)
+            If errorMessage <> "" Then
+                LabelFamilyDetails.Text = errorMessage
+                Return True
+            End If
+
+            'If ValidateAddress(TextBoxPermanentAddress.Text, "Permanent Address") OrElse ValidateAddress(TextBoxTempAddress.Text, "Temporary Address") Then
+            '    Return True
+            'End If
+
+            errorMessage = WebUserControlPermanentAddress.ValidateAddress("Permanent Address")
+            If errorMessage <> "" Then
+                LabelContactDetails.Text = errorMessage
+                Return True
+            End If
+
+            errorMessage = WebUserControlCurrAddress.ValidateAddress("Current Address")
+            If errorMessage <> "" Then
+                LabelContactDetails.Text = errorMessage
+                Return True
+            End If
+
+            If ValidateContactNumber(Trim(TextBoxMobileNo.Text), "Mobile No.") OrElse ValidateContactNumber(Trim(TextBoxResidenceNo.Text), "Residence No.") Then
+                Return True
+            End If
+
+            'If ValidateCountry(TextBoxCountry.Text, "Country") Then
+            '    Return True
+            'End If
+
+            If WebUserControlEmail.ValidateEmailId Then
+                LabelContactDetails.Text = "Incorrect EmailId. Please specify correct Email Id."
+                Return True
+            End If
+
+            If ValidatePassword() Then
+                Return True
+            End If
+
+        Catch ex As Exception
+            CommonObj.ShowMessageBox(ex.Message, "Critical")
+        End Try
+        Return False
+    End Function
+
+    Private Function ValidateName(ByVal Name As String, ByVal Text As String, Optional ByVal iPersonalLabel As Boolean = False) As Boolean
+        Try
+            Name = Trim(Name)
+            If Name = "" AndAlso Text <> "Middle Name" AndAlso Text <> "Spouse Name" Then
+                If iPersonalLabel Then
+                    LabelPersonalDetails.Text = "Please specify " & Text & "."
+                Else
+                    LabelFamilyDetails.Text = "Please specify " & Text & "."
+                End If
+                Return True
+            End If
+            For Each character As Char In Name
+                If (Not Char.IsLetter(character) AndAlso Not character = "." AndAlso Not character = " ") Then
+                    If iPersonalLabel Then
+                        LabelPersonalDetails.Text = Text & " can have Alphabets, (.) and space only."
+                    Else
+                        LabelFamilyDetails.Text = Text & " can have Alphabets, (.) and space only."
+                    End If
+                    Return True
+                End If
+            Next
+        Catch ex As Exception
+            CommonObj.ShowMessageBox(ex.Message, "Critical")
+        End Try
+        Return False
+    End Function
+
+    Private Function ValidateCountry(ByVal Name As String, ByVal Text As String, Optional ByVal iPersonalLabel As Boolean = False) As Boolean
+        Try
+            If Trim(Name) = "" Then
+                If iPersonalLabel Then
+                    LabelPersonalDetails.Text = "Please specify " & Text & "."
+                Else
+                    LabelContactDetails.Text = "Please specify " & Text & "."
+                End If
+                Return True
+            End If
+            For Each character As Char In Name
+                If (Not Char.IsLetter(character) AndAlso Not character = " ") Then
+                    If iPersonalLabel Then
+                        LabelPersonalDetails.Text = Text & " can have Alphabets and space only."
+                    Else
+                        LabelContactDetails.Text = Text & " can have Alphabets and space only."
+                    End If
+                    Return True
+                End If
+            Next
+        Catch ex As Exception
+            CommonObj.ShowMessageBox(ex.Message, "Critical")
+        End Try
+        Return False
+    End Function
+
+    Private Function ValidateAddress(ByVal Name As String, ByVal Text As String) As Boolean
+        Try
+            If Trim(Name) = "" Then
+                LabelContactDetails.Text = "Please specify " & Text & "."
+                Return True
+            End If
+            For Each character As Char In Name
+                If (Not Char.IsLetter(character) AndAlso Not Char.IsDigit(character) AndAlso Not character = " " AndAlso Not character = "-" _
+                AndAlso Not character = "/" AndAlso Not character = "\") AndAlso Not character = "," Then
+                    LabelContactDetails.Text = Text & " allows Alphabets, space and (-), (/), (\), (,)."
+                    Return True
+                End If
+            Next
+        Catch ex As Exception
+            CommonObj.ShowMessageBox(ex.Message, "Critical")
+        End Try
+        Return False
+    End Function
+
+    Private Function ValidateContactNumber(ByVal Name As String, ByVal Text As String) As Boolean
+        Try
+            If Trim(Name) = "" Then
+                LabelContactDetails.Text = "Please specify " & Text & "."
+                Return True
+            End If
+            For Each character As Char In Name
+                If (Not Char.IsDigit(character) AndAlso Not character = "-") Then
+                    LabelContactDetails.Text = Text & " can have Digits only."
+                    Return True
+                End If
+            Next
+        Catch ex As Exception
+            CommonObj.ShowMessageBox(ex.Message, "Critical")
+        End Try
+        Return False
+    End Function
+
+    Private Function ValidatePassword() As Boolean
+        Try
+            If Password.Value.Length < 8 Then
+                LabelLoginDetails.Text = "Password should be of atleast 8 characters."
+                Password.Value = ""
+                PasswordConf.Value = ""
+                Return True
+            End If
+
+            If Password.Value <> PasswordConf.Value Then
+                LabelLoginDetails.Text = "Password should be same."
+                Password.Value = ""
+                PasswordConf.Value = ""
+                Return True
+            End If
+
+        Catch ex As Exception
+            CommonObj.ShowMessageBox(ex.Message, "Critical")
+        End Try
+        Return False
+    End Function
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Dim MemberDataset As DataSet
+        'Dim Query As String
+        'Dim KPIN As String = ""
+        Try
+            LabelErrorMessage.Text = ""
+
+            If Not IsPostBack Then
+                LabelPersonalDetails.Text = ""
+                LabelFamilyDetails.Text = ""
+                LabelContactDetails.Text = ""
+                LabelLoginDetails.Text = ""
+                MemberDataset = Session("EditMemberInfo")
+
+                If Not MemberDataset Is Nothing Then
+                    'Query = "Select * from MemberInfo where KPIN = '" & KPIN & "'"
+
+                    'CommonObj.EstablishSQLConnection(Query, "Get")
+                    'MemberDataset = CommonObj.returnDataSet
+
+                    TextBoxFirstName.Text = MemberDataset.Tables(0).Rows(0).Item("FirstName").ToString()
+                    TextBoxLastName.Text = MemberDataset.Tables(0).Rows(0).Item("LastName").ToString()
+                    TextBoxMiddleName.Text = MemberDataset.Tables(0).Rows(0).Item("MiddleName").ToString()
+                    WebUserControlDOB.AssignDate = CommonObj.GenerateDatefromAge(CType(MemberDataset.Tables(0).Rows(0).Item("AgeDiff"), Integer))
+                    TextBoxNationality.Text = MemberDataset.Tables(0).Rows(0).Item("Nationality").ToString()
+
+                    WebUserControlFathersName.Name = MemberDataset.Tables(0).Rows(0).Item("FathersName").ToString()
+                    WebUserControlMothersName.Name = MemberDataset.Tables(0).Rows(0).Item("MothersName").ToString()
+                    WebUserControlSpouseName.Name = MemberDataset.Tables(0).Rows(0).Item("SpouseName").ToString()
+
+                    'TextBoxPermanentAddress.Text = MemberDataset.Tables(0).Rows(0).Item("PermanentAddress").ToString()
+                    'TextBoxTempAddress.Text = MemberDataset.Tables(0).Rows(0).Item("TemporaryAddress").ToString()
+                    'TextBoxCountry.Text = MemberDataset.Tables(0).Rows(0).Item("Country").ToString()
+
+                    WebUserControlPermanentAddress.Address = MemberDataset.Tables(0).Rows(0).Item("PermanentAddress").ToString()
+                    WebUserControlCurrAddress.Address = MemberDataset.Tables(0).Rows(0).Item("TemporaryAddress").ToString()
+                    'TextBoxCountry.Text = MemberDataset.Tables(0).Rows(0).Item("Country").ToString()
+
+                    TextBoxMobileNo.Text = MemberDataset.Tables(0).Rows(0).Item("MobileNo").ToString()
+                    TextBoxResidenceNo.Text = MemberDataset.Tables(0).Rows(0).Item("ResidenceNo").ToString()
+                    WebUserControlEmail.AssignEmailid = MemberDataset.Tables(0).Rows(0).Item("EmailId").ToString()
+                    KPIN = MemberDataset.Tables(0).Rows(0).Item("KPIN").ToString()
+                    'Session.Remove("EditMemberInfo")
+                    'Query = "Delete from MemberInfo where KPIN = '" & KPIN & "'"
+                    'CommonObj.EstablishSQLConnection(Query)
+                End If
+            End If
+            'StyleDef = "z-index: 100; left: 10px; position: absolute; top: 10px"
+        Catch ex As Exception
+            CommonObj.ShowMessageBox(ex.Message, "Critical")
+        End Try
+    End Sub
+
+    Private Function GenerateKPIN() As Integer
+        Dim RowNumber As Integer = 0
+        Dim AgeinDays As Integer
+        Try
+            AgeinDays = CommonObj.CalculateAge(WebUserControlDOB.BirthDay, WebUserControlDOB.BirthMonth, WebUserControlDOB.BirthYear)
+
+            Dim Query As String = ""
+
+            Query = "Delete from MemberInfo where KPIN = '" & KPIN & "'"
+            CommonObj.EstablishSQLConnection(Query)
+
+            Query = "Select max(KPIN) from MemberInfo"
+            CommonObj.EstablishSQLConnection(Query, "Get")
+
+            KPIN = CType(CommonObj.returnDataSet.Tables(0).Rows(0).Item(0) + 1, String)
+
+            Dim TempAddress As String = ""
+            If WebUserControlCurrAddress.CheckBoxStatus Then
+                TempAddress = Trim(WebUserControlPermanentAddress.Address)
+            Else
+                TempAddress = Trim(WebUserControlCurrAddress.Address)
+            End If
+
+            Query = "Insert Into MemberInfo " & _
+                    "(FirstName,MiddleName,LastName,AgeDiff,Nationality,FathersName,MothersName,SpouseName,Country,PermanentAddress, " & _
+                    "TemporaryAddress,MobileNo,ResidenceNo,EmailId,KPIN,Password, City) " & _
+                    "Select '" & _
+                    Trim(TextBoxFirstName.Text) & "' , '" & _
+                    Trim(TextBoxMiddleName.Text) & "' , '" & _
+                    Trim(TextBoxLastName.Text) & "' , '" & _
+                    AgeinDays & "' , '" & _
+                    Trim(TextBoxNationality.Text) & "' , '" & _
+                    WebUserControlFathersName.Name & "' , '" & _
+                    WebUserControlMothersName.Name & "' , '" & _
+                    WebUserControlSpouseName.Name & "' , '" & _
+                    WebUserControlCurrAddress.Country & "' , '" & _
+                    WebUserControlPermanentAddress.Address & "' , '" & _
+                    TempAddress & "' , '" & _
+                    Trim(TextBoxMobileNo.Text) & "' , '" & _
+                    Trim(TextBoxResidenceNo.Text) & "' , '" & _
+                    WebUserControlEmail.AssignEmailid & "' , '" & _
+                    KPIN & "' , '" & _
+                    Trim(Password.Value) & "' , '" & _
+                    WebUserControlCurrAddress.City & "' "
+            'Trim(TextBoxCountry.Text) & "' , '" & _
+            'Trim(TextBoxPermanentAddress.Text) & "' , '" & _
+            'Trim(TextBoxTempAddress.Text) & "' , '" & _
+
+            CommonObj.EstablishSQLConnection(Query)
+
+            Return CommonObj.returnRowNUmber
+
+        Catch ex As Exception
+            CommonObj.ShowMessageBox(ex.Message, "Critical")
+        End Try
+        Return RowNumber
+    End Function
+
+End Class

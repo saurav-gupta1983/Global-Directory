@@ -1,0 +1,194 @@
+<%@ Page Language="VB" MasterPageFile="~/Forms/MasterPage.master" AutoEventWireup="false" CodeFile="MembershipForm.aspx.vb" Inherits="MembershipForm" title="Member Details" %>
+
+<%@ Register Src="../User Controls/WebUserControlAddress.ascx" TagName="WebUserControlAddress" TagPrefix="uc4" %>
+
+<%@ Register Src="../User Controls/WebUserControlName.ascx" TagName="WebUserControlName" TagPrefix="uc3" %>
+<%@ Register Src="../User Controls/WebUserControlEmail.ascx" TagName="WebUserControlEmail" TagPrefix="uc2" %>
+<%@ Register Src="../User Controls/WebUserControl.ascx" TagName="WebUserControl" TagPrefix="uc1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolderforPages" Runat="Server">
+<script language="javascript" type="text/javascript">
+// <!CDATA[
+
+// ]]>
+</script>
+
+    <div style="text-align: left">
+        <table border="0" cellpadding="0" cellspacing="0" style="z-index: 101; left: 84px; position: absolute; top: 128px; width: 840px; height: 20px;">
+            <tr>
+                <td style="width: 250; text-align: center; background-color: #ffccff; font-weight: bold;">
+                    Enter your Information</td>
+                <td style="width: 590px; font-weight: bold; background-color: #ffccff;">
+                    <asp:Label ID="LabelErrorMessage" runat="server" Height="100%" Style="font-weight: bold; z-index: 102;
+                        left: 252px; color: red; position: absolute; top: 4px; font-size: small;" Width="504px"></asp:Label>
+                </td>
+            </tr>
+        </table>
+        <table border="0" cellpadding="0" cellspacing="0" style="left: 84px; width: 840px;
+            position: absolute; top: 160px; height: 123px; z-index: 102;">
+            <tr>
+                <td style="width: 143px; height: 27px; background-color: #0099ff;">
+                    Personal Details</td>
+                <td style="width: 128px; height: 27px; background-color: #0099ff;">
+                    <asp:Label ID="LabelPersonalDetails" runat="server" Style="z-index: 102; left: 252px;
+                        position: absolute; top: 4px; color: red; font-weight: bold;" Width="504px"></asp:Label>
+                    </td>
+            </tr>
+            <tr>
+                <td style="width: 143px; height: 24px;">
+                    First Name</td>
+                <td style="width: 128px; height: 24px;">
+                    <asp:TextBox ID="TextBoxFirstName" runat="server" Style="width: 250px; position: relative; z-index: 103; left: 0px; top: 0px;"
+                        Width="216px"></asp:TextBox></td>
+            </tr>
+            <tr>
+                <td style="width: 143px; height: 24px">
+                    Middle Name</td>
+                <td style="width: 128px; height: 24px">
+                    <asp:TextBox ID="TextBoxMiddleName" runat="server" Style="position: relative; width: 250px;"
+                        Width="248px"></asp:TextBox>
+                     </td>
+           </tr>
+            <tr>
+                <td style="width: 143px; height: 24px;">
+                    Last Name</td>
+                <td style="width: 128px; height: 24px;">
+                    <asp:TextBox ID="TextBoxLastName" runat="server" Style="position: relative; width: 250px;"
+                        Width="248px"></asp:TextBox>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 143px; height: 24px;">
+                    Date of Birth</td>
+                <td style="width: 128px; height: 24px;">
+                    <uc1:WebUserControl ID="WebUserControlDOB" runat="server" Visible="true" >
+                    </uc1:WebUserControl>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 143px; height: 24px;">
+                    Nationality</td>
+                <td style="width: 128px; height: 24px;">
+                      <asp:TextBox ID="TextBoxNationality" runat="server" Style="position: relative; width: 250px;"
+                        Width="248px"></asp:TextBox>
+                  </td>
+            </tr>
+        </table>
+       <table border="0" cellpadding="0" cellspacing="0" style="left: 84px; width: 840px;
+            position: absolute; top: 340px; height: 123px; z-index: 103;">
+            <tr>
+                <td style="width: 238px; height: 27px; background-color: #0099ff;">
+                    Family Details</td>
+                <td style="width: 123px; height: 27px; background-color: #0099ff;">
+                    <asp:Label ID="LabelFamilyDetails" runat="server" Style="z-index: 102; left: 252px;
+                        color: red; position: absolute; top: 4px; font-weight: bold;" Width="504px"></asp:Label>
+                    </td>
+            </tr>
+            <tr>
+                <td style="width: 238px; height: 24px;">
+                    Fathers Name</td>
+                <td style="width: 123px; height: 24px;">
+                  <uc3:WebUserControlName ID="WebUserControlFathersName" runat="server" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 238px; height: 24px;">
+                    Mother Name</td>
+                <td style="width: 123px; height: 24px;">
+                    <uc3:WebUserControlName ID="WebUserControlMothersName" runat="server" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 238px; height: 24px">
+                    Spouse Name</td>
+                <td style="width: 123px; height: 24px">
+                    <uc3:WebUserControlName ID="WebUserControlSpouseName" runat="server" />
+                     </td>
+           </tr>
+            <tr>
+                <td style="width: 238px; height: 24px;">
+                    Nationality</td>
+                <td style="width: 123px; height: 24px;">
+                      <asp:TextBox ID="TextBox1" runat="server" Style="position: relative; width: 250px;"
+                        Width="248px"></asp:TextBox>
+                  </td>
+            </tr>
+        </table>
+       <table border="0" cellpadding="0" cellspacing="0" style="left: 84px; width: 840px;
+            position: absolute; top: 515px; height: 99px; z-index: 104;">
+            <tr>
+                <td style="width: 230px; height: 27px; background-color: #0099ff;">
+                    Contact Details</td>
+                <td style="width: 128px; height: 27px; background-color: #0099ff;">
+                    <asp:Label ID="LabelContactDetails" runat="server" Style="z-index: 102; left: 252px; color: red;
+                        position: absolute; top: 4px; font-weight: bold;" Width="504px"></asp:Label>
+                    </td>
+            </tr>
+            <tr>
+                <td style="width: 230px; height: 24px;">
+                    Permanent Address</td>
+                <td style="width: 128px; height: 24px;">
+                    <uc4:WebUserControlAddress ID="WebUserControlPermanentAddress" runat="server" CheckBoxVisble="false" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 230px; height: 24px;">
+                    Current Address</td>
+                <td style="width: 128px; height: 24px;">
+                    <uc4:WebUserControlAddress ID="WebUserControlCurrAddress" runat="server" CheckBoxVisble="true" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 230px; height: 24px;">
+                    Mobile No</td>
+                <td style="width: 128px; height: 24px;">
+                      <asp:TextBox ID="TextBoxMobileNo" runat="server" Style="position: relative; width: 250px;"
+                        Width="248px"></asp:TextBox>
+                  </td>
+            </tr>
+            <tr>
+                <td style="width: 230px; height: 24px;">
+                    Residence No</td>
+                <td style="width: 128px; height: 24px;">
+                      <asp:TextBox ID="TextBoxResidenceNo" runat="server" Style="position: relative; width: 250px;"
+                        Width="248px"></asp:TextBox>
+                  </td>
+            </tr>
+            <tr>
+                <td style="width: 230px; height: 24px;">
+                    Email Id</td>
+                <td style="width: 128px; height: 24px;">
+                    <uc2:WebUserControlEmail ID="WebUserControlEmail" runat="server" />
+                  </td>
+            </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" style="left: 84px; width: 840px;
+            position: absolute; top: 730px; height: 75px; z-index: 104;">
+            <tr>
+                <td style="width: 108px; height: 27px; background-color: #0099ff;">
+                    Login Details</td>
+                <td style="width: 128px; height: 27px; background-color: #0099ff;">
+                    <asp:Label ID="LabelLoginDetails" runat="server" Style="z-index: 102; left: 252px; color: red;
+                        position: absolute; top: 4px; font-weight: bold;" Width="504px"></asp:Label>
+                    </td>
+            </tr>
+            <tr>
+                <td style="width: 108px; height: 24px;">
+                    Password </td>
+                <td style="width: 128px; height: 24px;">
+                    <input id="Password" runat="server" style="z-index: 100; left: 0px; position: relative; top: 32px; width: 248px;"
+                        type="password" /></td>
+            </tr>
+            <tr>
+                <td style="width: 108px; height: 18px;">
+                    Confirm Password</td>
+                <td style="width: 128px; height: 18px;">
+                    <input id="PasswordConf" runat="server" style="z-index: 101; left: 0px; position: relative;
+                        top: -30px; width: 248px;" type="password" /></td>
+            </tr>
+     </table>
+    </div>
+    <asp:Button ID="ButtonSubmit" runat="server" Style="z-index: 100; left: 396px; position: absolute;
+        top: 860px" Text="Submit Details" Width="116px" />
+</asp:Content>
+

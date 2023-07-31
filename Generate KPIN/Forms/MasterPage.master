@@ -1,0 +1,61 @@
+<%@ Master Language="VB" CodeFile="MasterPage.master.vb" Inherits="MasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>Global Directory</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <asp:Panel ID="PanelWrapper" runat="server" Style="left: 0px; position: absolute; top: 0px" Width="900px">
+            <div id="Header" style="z-index: 105; position: absolute; float:left; top: 0px; left: 0px; background-color: gainsboro;
+		    width: 900px; height: 100px;">
+                <asp:Panel ID="PanelHeader" runat="server">
+                    <asp:Image ID="ImageLogo" runat="server" Height="100px" ImageUrl="~/Images/Directoy_logo.gif"
+                            Style="left: 5px; position: absolute; top: 0px" Width="110px" />
+                    <asp:Label ID="LabelGlobalDir" runat="server" BorderColor="Red" Height="30px"
+                        Style="font-size: xx-large; left: 120px; position: absolute; top: 30px; color: #2525aa;" 
+                        Text="Global Directory" Width="400px"></asp:Label><br />
+                     <asp:Label ID="LabelWelcome" runat="server" BorderColor="Red" Height="20px"
+                        Style="text-align: center; left: 115px; position: absolute; top: 80px; color: #2525aa; background-color: #ffff00;" 
+                        Text="Welcome to Online Global Directory" Width="785"></asp:Label><br />
+                     <asp:Label ID="LabelHi" runat="server" BorderColor="Red" Height="20px"
+                        Style="text-align: right; left: 136px; position: absolute; top: 8px; color: green; font-weight: bold;" 
+                        Text="Hi" Width="704px"></asp:Label><br />
+                     <asp:HyperLink ID="HyperLinkLogout" runat="server" NavigateUrl="~/Forms/Logout.aspx"
+                        Style="text-align: right; left: 848px; position: absolute; top: 8px; color: green;" Width="48px">Logout</asp:HyperLink>
+              </asp:Panel>
+              <asp:Panel ID="PanelOptions" runat="server" style="z-index: 105; position: absolute; width: 900px; height: 20px; top: 100px">
+                    <table border="2" Bordercolor="blue" cellpadding="0" cellspacing="0" style="z-index: 108; width: 900px; height: 20px;">
+                        <tr>
+                            <td style="text-align: center; width: 25%; background-color: lightskyblue;">
+                                <asp:HyperLink ID="HyperLinkHome" runat="server" NavigateUrl="~/Forms/MembersInfo.aspx" style="color: green; font-weight: bold;">Home</asp:HyperLink>
+                            </td>
+                            <td style="text-align: center; width: 25%; background-color: lightskyblue;">
+                                <asp:HyperLink ID="HyperLinkProviders" runat="server" NavigateUrl="~/Forms/Providers.aspx" style="color: green; font-weight: bold;">Providers</asp:HyperLink>
+                            </td>
+                            <td style="text-align: center; width: 25%; background-color: lightskyblue;">
+                                <asp:HyperLink ID="HyperLinkPrivacy" runat="server" NavigateUrl="~/Forms/Privacy.aspx" style="color: green; font-weight: bold;">Privacy Practices</asp:HyperLink>
+                            </td>
+                            <td style="text-align: center; width: 25%; background-color: lightskyblue;">
+                                <asp:HyperLink ID="HyperLinkContactUs" runat="server" NavigateUrl="~/Forms/aboutus.aspx" style="color: green; font-weight: bold;">Contact Us</asp:HyperLink>
+                            </td>
+                        </tr>
+                    </table>
+                </asp:Panel>
+            </div>
+            
+            <div id="Content" style="z-index: 105; position: absolute; top: 130px;
+		        left: 75px; width: 750px">
+                <asp:Panel ID="PanelContentPlaceHolder" runat="server" Width = "100%" style="background-color: ghostwhite">
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolderforPages" runat="server">
+                    </asp:ContentPlaceHolder>
+                </asp:Panel>
+            </div>            
+       </asp:Panel>
+    </div>
+    </form>
+</body>
+</html>
